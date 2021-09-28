@@ -1,3 +1,6 @@
+
+// abstractはインスタンス化できない
+
 abstract class Person {
 
     static species = "homo sapiens"
@@ -24,6 +27,9 @@ abstract class Person {
 }
 
 class Teacher extends Person {
+
+    private static instance:Teacher;
+
     explainJob() {
         console.log("継承先で使用しないといけない")
     }
@@ -47,7 +53,9 @@ class Teacher extends Person {
         this._subject = value;
     }
 
-    constructor(name: string, age: number, private _subject: string) {
+    // privateを作るとnewでインスタンスが作れなくなる
+    // (シングルトンパターン：1つのクラスから1つのインスタンスしか作り出せない)
+    private constructor(name: string, age: number, private _subject: string) {
         // 継承前のコンストラクタを出している
         super(name, age);
     }
@@ -55,13 +63,23 @@ class Teacher extends Person {
     greetting() {
         console.log(`${this.incrementAge()}`)
     }
+
+    // シングルトンクラス内でnewを作る
+    static getInstance(){
+
+        if(Teacher.instance) return Teacher.instance;
+
+        // 最初は何も入っていないので抜ける
+        Teacher.instance =new Teacher("timi", 230, "math")
+        return Teacher.instance
+    }
 }
 
-const quill = new Person("quill", 38)
-quill.incrementAge()
+// const quill = new Person("quill", 38)
+// quill.incrementAge()
 
 
-const teacher = new Teacher("timi", 230, "math")
+const teacher = Teacher.getInstance()
 console.log(teacher.subject)
 
 // setterで格納する
